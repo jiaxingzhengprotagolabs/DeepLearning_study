@@ -5,48 +5,44 @@ import numpy as np
 import pandas as pd
 import shutil
 
+## retrieve data: samples from the language library after calculation of the model
+## fake data format:  document_id     relevance_score     question        answering         label
+### pada1， 2， 3分别代表不同的问句得到的返回数据
 
 pada1 = pd.read_csv('test1.txt', sep='\t')
 pada2 = pd.read_csv('test2.txt', sep='\t')
 pada3 = pd.read_csv('test3.txt', sep='\t')
 
+## dicts is the sample data of this test script
 dicts = []
+## 假设我们有三个问句，分别得到三个结果集，拼接到一起构成dicts，也就是sample data
 dicts = [pada1, pada2, pada3]
 
+## calculate for precision@1
 sum = 0
 ### precision@1
-for i in range(len(dicts)):
-    sum += dicts[i]["label"][0]
-    
+for q in dicts:
+    sum += q["label"][0]
+   
 precision1 = sum / len(dicts)
 
 
-### precision@k
+### precision@k  k from 1 to n: represent the rank order
 def precision(dicts, k):
     if dicts == None:
         print("Please load your test set!")
         return 0
-    if k<=0:
-        print("please keep value K as the number more than 0!")
+    if k <= 0 or k > len(dicts):
+        print("please input a valid value for k, which is from 1  to" + len(dicts))
         return 0
     
     sum = 0
-    for i in range(len(dicts)):
-        sum += dicts[i]["label"][k-1]
+    ## 对于sample中每一个rank为k的问答句pair precision@k = sum / sample中所有rank为k的问句总数
+    for q in dicts:
+        sum += q["label"][k-1]
     res = sum / len(dicts)
     return res
 
-
-## total number of sentence in the sample dicts
-def total(dicts):
-    if dicts == None:
-        print("Please load your test set!")
-        return 0
-    
-    res = 0
-    for i in range(len(dicts)):
-        res += len(dicts[i])
-    return res
 
 
 ## MAP value
@@ -55,8 +51,8 @@ def mAP(dicts, k):
     if dicts == None:
         print("Please load your test set!")
         return 0
-    if k<=0:
-        print("please keep value K as the number more than 0!")
+    if k <= 0 or k > len(dicts):
+        print("please input a valid value for k, which is from 1  to" + len(dicts))
         return 0
     
     sum1 = 0
@@ -69,7 +65,7 @@ def mAP(dicts, k):
             Nq += q["label"][j]
             
         sum1 += sum2 / Nq
-    return sum1 / total(dicts)
+    return sum1 / len(dicts)
 
 ## rank(i) ???
 def rank(q):
@@ -84,7 +80,7 @@ def mRR(dicts):
     sum1 = 0
     for q in dicts:
         sum1 += 1 / rank(q)
-    return sum1 / total(dicts)
+    return sum1 / len(dicts)
 
 
 ## Z is a constant number
@@ -95,8 +91,8 @@ def nDCG(dicts, k):
     if dicts == None:
         print("Please load your test set!")
         return 0
-    if k<=0:
-        print("please keep value K as the number more than 0!")
+    if k <= 0 or k > len(dicts):
+        print("please input a valid value for k, which is from 1  to" + len(dicts))
         return 0
     
     sum1 = 0
@@ -107,7 +103,7 @@ def nDCG(dicts, k):
         
         sum1 += sum2 / Z
                      
-        return sum1 / total(dicts)
+        return sum1 / len(dicts)
 
 
 if __name__ == '__main__':

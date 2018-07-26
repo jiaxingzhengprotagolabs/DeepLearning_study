@@ -1,5 +1,6 @@
 # DeepLearning_study
 
 ```
-dasfsadasd
+$ pip install
 ```
+dafafdsa

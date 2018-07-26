@@ -27,7 +27,19 @@ python == 3.6+
 
 ### Run the script
 
+1. calculate precision
 ```
-$ 
+$ python test.py precision [number]
 ```
-dafafdsa
+2. calculate MAP 
+```
+$ python test.py MAP [number]
+```
+3. calculate RR
+```
+$ python test.py MRR
+```
+4. calculate nDCG
+```
+$ python test.py nDCG [number]
+```

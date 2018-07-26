@@ -12,11 +12,13 @@ import shutil
 pada1 = pd.read_csv('test1.txt', sep='\t')
 pada2 = pd.read_csv('test2.txt', sep='\t')
 pada3 = pd.read_csv('test3.txt', sep='\t')
-
+raters = pd.read_csv('raters.txt', sep='\t')
 ## dicts is the sample data of this test script
 dicts = []
 ## 假设我们有三个问句，分别得到三个结果集，拼接到一起构成dicts，也就是sample data
 dicts = [pada1, pada2, pada3]
+
+## calculate label for dicts
 
 ## calculate for precision@1
 sum = 0
@@ -25,6 +27,38 @@ for q in dicts:
     sum += q["label"][0]
    
 precision1 = sum / len(dicts)
+
+
+
+### using the raters to give the dicts initialization of labels
+def labeled(dicts, raters):
+    tmp = dicts
+    rater = raters.values.tolist()
+    if tmp == None:
+        print("Please load your test set!")
+        return 0
+    lens = 0
+    if len(tmp) != len(raters):
+        lens = len(tmp)
+    else:
+        lens = len(raters)
+    
+    for i in range(lens):
+        for j in range(len(tmp[i]['answer'])):
+            if tmp[i]['answer'][j] == rater[i][1]:
+                tmp[i]['label'][j] = 1
+                continue
+            elif tmp[i]['answer'][j] == rater[i][2]:
+                tmp[i]['label'][j] = 1
+                continue
+            elif tmp[i]['answer'][j] == rater[i][3]:
+                tmp[i]['label'][j] = 1
+                continue  
+            else:
+                tmp[i]['label'][j] = 0
+    return tmp, rater
+
+dicts, raters = labeled(dicts, raters)
 
 
 ### precision@k  k from 1 to n: represent the rank order
@@ -63,8 +97,12 @@ def mAP(dicts, k):
             sum2 += precision(dicts, i+1) * (precision(dicts, i+1) * len(dicts))
         for j in range(len(q)):
             Nq += q["label"][j]
-            
-        sum1 += sum2 / Nq
+
+        if Nq == 0:
+        	sum1 += 0
+        else:
+        	sum1 += sum2 / Nq
+
     return sum1 / len(dicts)
 
 ## rank(i) ???

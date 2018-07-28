@@ -12,7 +12,7 @@ import shutil
 pada1 = pd.read_csv('test1.txt', sep='\t')
 pada2 = pd.read_csv('test2.txt', sep='\t')
 pada3 = pd.read_csv('test3.txt', sep='\t')
-raters = pd.read_csv('raters.txt', sep='\t')
+## raters = pd.read_csv('raters.txt', sep='\t')
 ## dicts is the sample data of this test script
 dicts = []
 ## 假设我们有三个问句，分别得到三个结果集，拼接到一起构成dicts，也就是sample data
@@ -31,6 +31,8 @@ precision1 = sum / len(dicts)
 
 
 ### using the raters to give the dicts initialization of labels
+## 也可以直接fake所有的 label，因为目前我们人工的ground truth并不准确
+
 def labeled(dicts, raters):
     tmp = dicts
     rater = raters.values.tolist()
@@ -58,7 +60,7 @@ def labeled(dicts, raters):
                 tmp[i]['label'][j] = 0
     return tmp, rater
 
-dicts, raters = labeled(dicts, raters)
+##dicts, raters = labeled(dicts, raters)
 
 
 ### precision@k  k from 1 to n: represent the rank order
@@ -105,9 +107,6 @@ def mAP(dicts, k):
 
     return sum1 / len(dicts)
 
-## rank(i) ???
-def rank(q):
-    return 1
 
 ## MRR
 def mRR(dicts):
@@ -117,7 +116,10 @@ def mRR(dicts):
     
     sum1 = 0
     for q in dicts:
-        sum1 += 1 / rank(q)
+       for i in range(len(q)):
+            if(q["label"][i] == 1):
+                sum1 += 1 / (i + 1)
+
     return sum1 / len(dicts)
 
 

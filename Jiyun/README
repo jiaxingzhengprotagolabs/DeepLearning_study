@@ -1,0 +1,44 @@
+
+First active python virtual enviroment.
+        source activate application
+
+Install several packages
+        pip install jieba
+        pip install pandas
+        pip install jsonpickle
+        pip install python-docx
+
+
+Phase 1:
+
+execute simple_index_builder.py once to build inverted index and forward index for q&a pairs in corpus_path directory. Inverted index is stored as inverted_index.json file and forward index is stored as forward_index.json.
+
+python simple_index_builder.py corpus_path
+
+e.g.
+        python simple_index_builder.py corpus/
+
+
+
+Phase 2:
+
+simple_retrieval.py loads simple_retrieval.py once, then conducts retrieval for each query.
+
+python simple_retrieval.py query
+
+e.g.
+        python simple_retrieval.py '你好达尔文'
+        python simple_retrieval.py '如何赚钱'
+
+
+Output format:
+
+document_id     relevance_score question        answering       confidence_score
+
+
+e.g.
+
+        29 16.662825113315947  达尔文你好！    你好，我是人工智能机器人达尔文，一个24小时都在学习的智能机器人。我可是有很多功能而且每种功>能都很厉害，你想不想了解一下？ 1.0
+
+Here confidence_score ranges from 0 to 1, 0 means the algorithm is not confident about the 
+quality of the retrieval results, while 1 means it is very confident about the results.
